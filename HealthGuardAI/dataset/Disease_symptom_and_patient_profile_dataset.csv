@@ -1,0 +1,5 @@
+Disease,Fever,Cough,Fatigue,Difficulty Breathing,Age,Gender,Blood Pressure,Cholesterol Level,Outcome Variable
+Influenza,Yes,No,Yes,Yes,19,Female,Low,Normal,Positive
+Common Cold,No,Yes,Yes,No,25,Female,Normal,Normal,Negative
+Eczema,No,Yes,Yes,No,25,Female,Normal,Normal,Negative
+Asthma,Yes,Yes,No
