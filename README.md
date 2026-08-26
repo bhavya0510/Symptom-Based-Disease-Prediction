@@ -3,10 +3,21 @@
 ## Overview
 Machine Learning web app predicting 116 diseases from 4 symptoms + patient profile using your dataset (`Disease_symptom_and_patient_profile_dataset.csv`, 349 samples).
 
-Model: RandomForestClassifier (100 trees)
-Backend: Flask API
-Frontend: Responsive HTML/CSS/JS
-ML Stack: scikit-learn, pandas, joblib
+Model: RandomForestClassifier (100 trees)  
+Backend: Flask API  
+Frontend: Responsive HTML/CSS/JS  
+ML Stack: scikit-learn, pandas, joblib  
+
+## 📸 Application Screenshots
+
+### 1. Hero Dashboard & Overview
+![HealthGuard AI Dashboard Overview](docs/screenshots/hero_dashboard.png)
+
+### 2. Symptom Analysis & Disease Prediction Results
+![Symptom Analysis & Disease Prediction Results](docs/screenshots/disease_prediction_results.png)
+
+### 3. Dark Mode UI Preview
+![Dark Mode UI Preview](docs/screenshots/dark_mode_preview.png)
 
 ## Dataset Details
 | Feature | Type | Values |

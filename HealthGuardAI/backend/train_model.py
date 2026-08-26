@@ -44,7 +44,7 @@ preprocessor = ColumnTransformer(
 print("Training...")
 pipeline = Pipeline([
     ('preprocessor', preprocessor),
-    ('classifier', RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=-1))
+    ('classifier', RandomForestClassifier(n_estimators=100, random_state=42, n_jobs=1))
 ])
 # X_clean = X.fillna('No')\nX_clean = X.copy()
 pipeline.fit(X, y_enc)

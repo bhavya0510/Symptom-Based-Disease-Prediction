@@ -1,5 +1,7 @@
 // Health Guard AI - Premium SaaS Frontend Script
-const API_URL = 'http://127.0.0.1:5000/predict';
+const API_URL = window.location.origin && window.location.origin !== 'null' && window.location.protocol.startsWith('http')
+  ? `${window.location.origin}/predict`
+  : 'http://127.0.0.1:5050/predict';
 let isDarkMode = localStorage.getItem('darkMode') === 'true';
 let currentResults = [];
 

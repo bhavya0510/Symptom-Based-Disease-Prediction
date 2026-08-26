@@ -1,0 +1,10 @@
+# Python / venv
+venv/
+**/venv/
+__pycache__/
+**/__pycache__/
+*.pyc
+
+# Temporary scratch scripts
+screenshot_hero.png
+take_screenshots.py

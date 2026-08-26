@@ -1,18 +1,20 @@
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 import joblib
 import pandas as pd
 import numpy as np
 import os
 
-app = Flask(__name__)
+frontend_folder = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'frontend'))
+app = Flask(__name__, static_folder=frontend_folder, static_url_path='')
 CORS(app)  # Enable CORS for frontend
 
 # Load model, encoder, metadata
 print("Loading model and metadata...")
-model = joblib.load('model.pkl')
-label_encoder = joblib.load('encoder.pkl')
-metadata = joblib.load('metadata.pkl')
+backend_dir = os.path.dirname(__file__)
+model = joblib.load(os.path.join(backend_dir, 'model.pkl'))
+label_encoder = joblib.load(os.path.join(backend_dir, 'encoder.pkl'))
+metadata = joblib.load(os.path.join(backend_dir, 'metadata.pkl'))
 feature_cols = metadata['feature_cols']
 cat_cols = metadata['cat_cols']
 num_cols = metadata['num_cols']
@@ -29,6 +31,8 @@ def predict():
         symptoms_input = data.get('symptoms', [])  # ["Fever", "Cough"]
         age = data.get('age')
         gender = data.get('gender')
+        blood_pressure = data.get('bloodPressure') or data.get('blood_pressure')
+        cholesterol = data.get('cholesterolLevel') or data.get('cholesterol_level')
         
         # Create input DataFrame with same columns as training
         input_data = {}
@@ -42,10 +46,14 @@ def predict():
                 input_data[symptom] = 'Yes'
         
         # Set patient data if provided
-        if age is not None:
+        if age is not None and age != '':
             input_data['Age'] = int(age)
         if gender:
             input_data['Gender'] = gender.title()
+        if blood_pressure:
+            input_data['Blood Pressure'] = blood_pressure.title()
+        if cholesterol:
+            input_data['Cholesterol Level'] = cholesterol.title()
         
         # Fill missing with proper defaults
         for col in feature_cols:
@@ -68,8 +76,8 @@ def predict():
         prediction = model.predict(df_input)[0]
         probabilities = model.predict_proba(df_input)[0]
         
-        # Top 3 predictions
-        top_indices = np.argsort(probabilities)[::-1][:3]
+        # Top 5 predictions for richer insights
+        top_indices = np.argsort(probabilities)[::-1][:5]
         predictions = []
         for idx in top_indices:
             disease = label_encoder.inverse_transform([idx])[0]
@@ -79,7 +87,7 @@ def predict():
         return jsonify({
             'predictions': predictions,
             'top_prediction': predictions[0]['disease'],
-            'disclaimer': 'This is not medical advice. Consult a doctor.'
+            'disclaimer': 'This is an AI decision-support prototype, not medical advice. Consult a healthcare professional.'
         })
     
     except Exception as e:
@@ -87,7 +95,13 @@ def predict():
 
 @app.route('/')
 def home():
-    return jsonify({'message': 'Health Guard AI API - POST to /predict'})
+    return send_from_directory(frontend_folder, 'index.html')
+
+@app.route('/<path:path>')
+def serve_static(path):
+    if os.path.exists(os.path.join(frontend_folder, path)):
+        return send_from_directory(frontend_folder, path)
+    return jsonify({'error': 'Not found'}), 404
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5050, debug=True)
